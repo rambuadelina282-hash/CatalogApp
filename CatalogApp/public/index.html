@@ -8,45 +8,39 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; color: #1f2937; }
-        
-        /* Modern Bubbles */
         .grade-bubble { display: inline-flex; justify-content: center; align-items: center; width: 44px; height: 44px; border-radius: 8px; border: 1px solid #e5e7eb; font-weight: 600; font-size: 15px; color: #374151; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.02); position: relative;}
         .grade-bubble.has-obs { border-color: #fca5a5; color: #dc2626; background: #fff1f2; }
         .obs-dot { position: absolute; top: -5px; right: -5px; width: 12px; height: 12px; background-color: #ef4444; border-radius: 50%; border: 2px solid white; }
-        
         .circle-btn { width: 46px; height: 46px; border-radius: 50%; background-color: #f3f4f6; color: #4b5563; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.2s ease;}
         .circle-btn:hover { background-color: #e5e7eb; } 
         .circle-btn.selected { background-color: #4f46e5; color: white; box-shadow: 0 4px 10px -2px rgba(79, 70, 229, 0.4); transform: translateY(-1px);}
-
-        /* Tab Transition */
         .tab-btn { font-weight: 600; border-bottom: 2px solid transparent; color: #6b7280; padding-bottom: 12px; margin-right: 24px; transition: 0.3s; }
         .tab-btn.active { color: #4f46e5; border-bottom-color: #4f46e5; }
     </style>
 </head>
 <body class="min-h-screen">
 
-    <!-- ECRAN AUTENTIFICARE (Design identic pozelor tale) -->
+    <!-- AUTENTIFICAREA / PANOU CONT SECURIAT -->
     <div id="authContainer" class="flex flex-col items-center justify-center min-h-screen p-4">
         <div class="bg-white p-10 rounded-[1.25rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-full max-w-[440px] text-center border border-gray-100">
-            <!-- Iconita Carte Indigo -->
+            <!-- Logo app iconite pur style -->
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-indigo-50 mb-5 text-indigo-600">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
             </div>
             
             <h2 id="authTitle" class="text-[26px] font-bold text-slate-900 tracking-tight mb-2 mt-2">Agenda Electronică</h2>
             <p id="authSubtitle" class="text-[14px] text-slate-500 mb-8">Conectați-vă la contul dumneavoastră</p>
 
-            <form id="authForm" class="space-y-5 text-left" onsubmit="handleAuth(event)">
+            <!-- AICI AM ÎNCHIS AUTOMATIZAREA Nativă FORM-ul prin ascunderea lui direct-->
+            <form id="authForm" class="space-y-5 text-left">
                 <div id="nameGroup" style="display: none;">
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nume complet</label>
                     <input type="text" id="regName" placeholder="Ex: Ion Popescu" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm">
                 </div>
-                
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">Adresă de e-mail</label>
                     <input type="email" id="email" required placeholder="nume@exemplu.com" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition-all text-sm">
                 </div>
-                
                 <div>
                     <div class="flex justify-between items-center mb-1.5">
                         <label class="block text-sm font-semibold text-slate-700">Parolă</label>
@@ -54,15 +48,9 @@
                     </div>
                     <input type="password" id="password" required placeholder="••••••••" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition-all tracking-wider">
                 </div>
-                
                 <div id="roleGroup" style="display: none;">
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">Rol cont</label>
-                    <div class="relative">
-                        <select id="regRole" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition-all appearance-none text-sm">
-                            <option value="elev">Elev</option>
-                            <option value="profesor">Profesor</option>
-                        </select>
-                    </div>
+                    <select id="regRole" class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 transition-all appearance-none text-sm"><option value="elev">Elev</option><option value="profesor">Profesor</option></select>
                 </div>
                 
                 <button type="submit" id="mainBtn" class="w-full bg-[#5A51FF] hover:bg-indigo-600 text-white font-semibold py-3.5 rounded-lg text-sm mt-2 transition-colors shadow-sm shadow-indigo-200">
@@ -70,108 +58,47 @@
                 </button>
             </form>
             
-            <!-- Separator pur minimalist -->
             <div class="border-t mt-8 pt-6">
-                <p id="toggleAuth" class="text-[14px] text-slate-500" onclick="toggleAuthMode()">
-                    Nu aveți cont? <span class="text-indigo-600 font-semibold cursor-pointer hover:underline">Înregistrați-vă aici</span>
+                <p class="text-[14px] text-slate-500">
+                    <span id="promptText">Nu aveți cont? </span>
+                    <span id="toggleAuthBtn" class="text-indigo-600 font-semibold cursor-pointer hover:underline">Înregistrați-vă aici</span>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- ECRAN PRINCIPAL INTERN -->
+    <!-- ===== ECRAN AGENDA DINAMIC INTERIOR (Intact ca si restul functionalitatii predate azi!) ==== -->
     <div id="appWrap" style="display:none;">
-        
-        <!-- Navbar Modern -->
-        <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-            <div class="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 14v7"/></svg>
-                    </div>
-                    <div>
-                        <h1 id="headerTitle" class="text-base font-bold text-gray-900 leading-tight">Agenda</h1>
-                        <p id="headerName" class="text-[13px] text-gray-500 font-medium leading-tight">Nume P</p>
-                    </div>
-                </div>
-                <button onclick="logout()" class="text-sm font-semibold flex items-center text-slate-600 hover:text-slate-900 transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                    Deconectare
-                </button>
-            </div>
-        </header>
+        <header class="bg-white border-b border-gray-100 sticky top-0 z-50"><div class="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" stroke-linecap="round" stroke-linejoin="round"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 14v7"/></svg></div><div><h1 id="headerTitle" class="text-base font-bold text-gray-900 leading-tight">Agenda</h1><p id="headerName" class="text-[13px] text-gray-500 font-medium leading-tight">Nume</p></div></div><button onclick="logout()" class="text-sm font-semibold flex items-center text-slate-600 hover:text-slate-900 transition-colors"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>Deconectare</button></div></header>
 
         <main id="appContainer" class="p-6 max-w-[1280px] mx-auto py-10 space-y-6">
-            
-            <!-- ====== PANOU PROFESOR ====== -->
             <div id="teacherView" style="display: none;">
-                
-                <div class="flex items-center justify-between mb-8 border-b pb-2">
-                    <div class="flex text-sm tracking-wide">
-                        <button onclick="switchTab('noteView')" id="btnTabNote" class="tab-btn active tracking-tight">Agenda Catalog / Acordă Note</button>
-                        <button onclick="switchTab('hwView')" id="btnTabHw" class="tab-btn tracking-tight">Atribuire Teme pe Acasă</button>
-                    </div>
-                </div>
-
-                <!-- Grila Layout Inversat asemanator pozelor (Stânga form, dreapta datele) -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    
-                    <!-- BOX STÂNGA: Formular Acțiuni -->
-                    <div class="bg-white border border-gray-100 rounded-[1.2rem] shadow-sm p-8">
-                        
-                        <!-- Meniul Note -->
+                <div class="flex items-center justify-between mb-8 border-b pb-2"><div class="flex text-sm tracking-wide"><button onclick="switchTab('noteView')" id="btnTabNote" class="tab-btn active tracking-tight">Agenda Catalog / Acordă Note</button><button onclick="switchTab('hwView')" id="btnTabHw" class="tab-btn tracking-tight">Atribuire Teme pe Acasă</button></div></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"><div class="bg-white border border-gray-100 rounded-[1.2rem] shadow-sm p-8">
                         <div id="noteViewBlock">
-                            <h3 class="text-xl font-bold text-gray-900 tracking-tight">Adăugare Notă</h3>
-                            <p class="text-sm text-gray-500 mt-1 mb-8 font-medium">Selectați elevul și materia pentru a adăuga o notă în catalog.</p>
-
-                            <div class="grid grid-cols-2 gap-4 mb-8">
-                                <div><label class="block text-sm font-bold text-slate-800 mb-2">Elev</label>
-                                    <select id="tSelectElev" onchange="loadSpecifics(this.value)" class="w-full border border-indigo-500 rounded-lg p-2.5 outline-none font-medium text-sm"></select>
-                                </div>
-                                <div><label class="block text-sm font-bold text-slate-800 mb-2">Materie</label>
-                                    <select id="tSelectMaterie" class="w-full border border-gray-200 rounded-lg p-2.5 text-sm"></select>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-8">
-                                <label class="block text-[13px] font-bold text-slate-800 mb-3 uppercase tracking-wider text-gray-500">Notă (1-10)</label>
-                                <div class="flex gap-2 flex-wrap" id="gradesSelection"></div>
-                            </div>
-                            
-                            <div class="mb-8">
-                                <label class="block text-sm font-bold text-slate-800 mb-2">Notă informativă / Observație (opțional)</label>
-                                <textarea id="tObs" rows="3" placeholder="Adăugați un comentariu pentru elev..." class="w-full border border-gray-200 rounded-lg p-3 resize-none outline-none focus:border-indigo-400 text-sm"></textarea>
-                            </div>
-                            
-                            <button onclick="saveGrade()" class="bg-[#5A51FF] hover:bg-indigo-600 text-white font-bold py-3.5 px-6 rounded-lg shadow-sm text-sm">
-                                Salvează Nota
-                            </button>
+                            <h3 class="text-xl font-bold text-gray-900 tracking-tight">Adăugare Notă</h3><p class="text-sm text-gray-500 mt-1 mb-8 font-medium">Selectați elevul și materia pentru a adăuga o notă în catalog.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-8"><div><label class="block text-sm font-bold text-slate-800 mb-2">Elev</label><select id="tSelectElev" onchange="loadSpecifics(this.value)" class="w-full border border-indigo-500 rounded-lg p-2.5 outline-none font-medium text-sm"></select></div><div><label class="block text-sm font-bold text-slate-800 mb-2">Materie</label><select id="tSelectMaterie" class="w-full border border-gray-200 rounded-lg p-2.5 text-sm"></select></div></div>
+                            <div class="mb-8"><label class="block text-[13px] font-bold text-slate-800 mb-3 uppercase tracking-wider text-gray-500">Notă (1-10)</label><div class="flex gap-2 flex-wrap" id="gradesSelection"></div></div>
+                            <div class="mb-8"><label class="block text-sm font-bold text-slate-800 mb-2">Notă informativă / Observație (opțional)</label><textarea id="tObs" rows="3" placeholder="Adăugați un comentariu..." class="w-full border border-gray-200 rounded-lg p-3 resize-none outline-none focus:border-indigo-400 text-sm"></textarea></div>
+                            <button onclick="saveGrade()" class="bg-[#5A51FF] hover:bg-indigo-600 text-white font-bold py-3.5 px-6 rounded-lg shadow-sm text-sm">Salvează Nota</button>
                         </div>
-
-                        <!-- Meniul TEME (Creat fin pentru a se mula perfect pe design) -->
-                        <div id="hwViewBlock" style="display: none;">
-                            <h3 class="text-xl font-bold text-gray-900 tracking-tight">Atribuie Tema nouă</h3>
-                            <p class="text-sm text-gray-500 mt-1 mb-8 font-medium">Setați tematica pentru acasă specificată pentru viitoarea oră.</p>
-
-                            <div class="grid grid-cols-2 gap-4 mb-6">
-                                <div><label class="block text-sm font-bold mb-2 text-slate-800">Către Elevul</label><select id="hSelectElev" onchange="loadSpecifics(this.value)" class="w-full border border-indigo-400 bg-indigo-50 rounded-lg p-2.5 font-medium text-sm outline-none"></select></div>
-                                <div><label class="block text-sm font-bold mb-2 text-slate-800">Din Materia</label><select id="hSelectMaterie" class="w-full border rounded-lg p-2.5 text-sm border-gray-200 outline-none"></select></div>
-                            </div>
-                            <div class="mb-5">
-                                <label class="block text-sm font-bold text-slate-800 mb-2">Detalii (De ex: Va avea +1 pct?)</label>
-                                <input type="text" id="hPunctaj" placeholder="Adăugați un aspect legat de evaluarea temei..." class="w-full border rounded-lg p-3 border-gray-200 outline-none focus:border-indigo-400 text-sm">
-                            </div>
-                            <div class="mb-8">
-                                <label class="block text-sm font-bold mb-2 text-slate-800">Conținut Temă</label>
-                                <textarea id="hDescriere" rows="4" placeholder="Ce are de realizat copilul pentru acasă?" class="w-full border border-gray-200 rounded-lg p-3 resize-none text-sm outline-none focus:border-indigo-400"></textarea>
-                            </div>
-                            <button onclick="saveHomework()" class="bg-gray-800 hover:bg-black text-white px-6 py-3.5 rounded-lg font-bold text-sm">
-                                Distribuie Tematica
-                            </button>
+                        <div id="hwViewBlock" style="display: none;"><h3 class="text-xl font-bold text-gray-900 tracking-tight">Atribuie Tema nouă</h3><p class="text-sm text-gray-500 mt-1 mb-8 font-medium">Setați tematica pentru acasă specificată pentru viitoarea oră.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-6"><div><label class="block text-sm font-bold mb-2 text-slate-800">Către Elevul</label><select id="hSelectElev" onchange="loadSpecifics(this.value)" class="w-full border border-indigo-400 bg-indigo-50 rounded-lg p-2.5 font-medium text-sm outline-none"></select></div><div><label class="block text-sm font-bold mb-2 text-slate-800">Din Materia</label><select id="hSelectMaterie" class="w-full border rounded-lg p-2.5 text-sm border-gray-200 outline-none"></select></div></div>
+                            <div class="mb-5"><label class="block text-sm font-bold text-slate-800 mb-2">Detalii punctaj? (Ex. Primeste +2?)</label><input type="text" id="hPunctaj" placeholder="..." class="w-full border rounded-lg p-3 border-gray-200 outline-none text-sm"></div>
+                            <div class="mb-8"><label class="block text-sm font-bold mb-2 text-slate-800">Conținut Temă</label><textarea id="hDescriere" rows="4" placeholder="Ce are de realizat copilul pentru acasă?" class="w-full border border-gray-200 rounded-lg p-3 resize-none text-sm outline-none"></textarea></div>
+                            <button onclick="saveHomework()" class="bg-gray-800 hover:bg-black text-white px-6 py-3.5 rounded-lg font-bold text-sm">Distribuie Tematica</button>
                         </div>
-
                     </div>
+                    <div class="bg-white border border-gray-100 rounded-[1.2rem] shadow-sm p-8 max-h-[750px] overflow-y-auto"><h3 class="text-xl font-bold text-gray-900 tracking-tight">Istoric Selectat</h3><p class="text-sm text-gray-500 mt-1 mb-6 font-medium">Vizualizați ce înregistrări îi apar acestui copil pe platformă.</p>
+                        <div id="tHistoryList"><div class="p-4 rounded-xl border border-gray-100 bg-gray-50 text-sm italic text-gray-500 mt-4 text-center py-10">Selectați un profil de elev...</div></div></div></div>
+            </div>
+            <div id="studentView" style="display: none;">
+                <div id="hwContainerAlert" style="display: none;" class="mb-10"><h3 class="font-bold text-[18px] mb-5 text-gray-800">Sarcini de efectuat pt acasă:</h3><div class="grid grid-cols-1 lg:grid-cols-2 gap-4" id="hwActiveList"></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="studentSubjectsGrid"></div>
+            </div>
+        </main>
+    </div>
 
-                    <!-- BOX DREAPTA: Afișare Curată Listă date -->
-                    <div class="bg-white border border-gray-100 rounded-[1.2rem] shadow-sm p-8 max-h-[750px] overflow-y-auto">
-                        <h3 class="text-xl font-bold
+    <script src="app.js"></script>
+</body>
+</html>
