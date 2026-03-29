@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Electronică & Teme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .circle-btn { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-color: #f3f4f6; color: #374151; font-weight: 500; cursor: pointer; transition: 0.2s;}
+        .circle-btn:hover { background-color: #e5e7eb; } .circle-btn.selected { background-color: #4f46e5; color: white; }
+        .grade-box { position: relative; width: 45px; height: 45px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; background-color: #f9fafb; border: 1px solid #e5e7eb;}
+        .grade-box.has-note { color: #dc2626; border-color: #fecaca; background-color: #fef2f2;}
+        .red-dot { position: absolute; top: -4px; right: -4px; width: 10px; height: 10px; background-color: #ef4444; border-radius: 50%;}
+        
+        /* Navigatie Teacher */
+        .tab-btn { padding: 10px 20px; font-weight: 600; border-bottom: 2px solid transparent; color: #6b7280; transition: 0.3s;}
+        .tab-btn.active { color: #4f46e5; border-bottom: 2px solid #4f46e5; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800">
+
+    <div id="authContainer" class="flex flex-col items-center justify-center min-h-screen px-4">
+        <!-- Păstrăm logica de login la fel ca in original... -->
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-1">Agenda & Teme</h2>
+            <p id="authSubtitle" class="text-sm text-gray-500 mb-6">Autentificare cont</p>
+
+            <form id="authForm" class="space-y-4 text-left" onsubmit="handleAuth(event)">
+                <div id="nameGroup" style="display: none;">
+                    <label class="block text-sm font-semibold">Nume</label>
+                    <input type="text" id="regName" class="w-full border rounded-lg p-2.5">
+                </div>
+                <div><label class="block text-sm font-semibold">E-mail</label> <input type="email" id="email" required class="w-full border rounded-lg p-2.5"></div>
+                <div><div class="flex justify-between items-center"><label class="block text-sm font-semibold">Parolă</label><a href="#" onclick="recoverPassword()" class="text-xs text-indigo-600">Ați uitat parola?</a></div> <input type="password" id="password" required class="w-full border rounded-lg p-2.5"></div>
+                
+                <div id="roleGroup" style="display: none;" class="mt-2">
+                    <label class="block text-sm font-semibold mb-1">Rol</label>
+                    <select id="regRole" class="w-full border rounded-lg p-2.5"><option value="elev">Elev</option><option value="profesor">Profesor</option></select>
+                </div>
+                <button type="submit" id="mainBtn" class="w-full bg-indigo-600 text-white font-medium py-2.5 rounded-lg">Conectare</button>
+            </form>
+            <p id="toggleAuth" class="text-sm text-gray-500 mt-6 cursor-pointer" onclick="toggleAuthMode()">Nu aveți cont? <span class="text-indigo-600">Înregistrare</span></p>
+        </div>
+    </div>
+
+    <!-- Header Aplicație -->
+    <header id="appHeader" style="display: none;" class="bg-white border-b flex justify-between items-center px-8 py-4">
+        <div><h1 id="headerTitle" class="text-lg font-bold">Panou</h1><p id="headerName" class="text-xs text-gray-500">Nume</p></div>
+        <button onclick="logout()" class="text-sm font-medium flex items-center text-red-600 hover:text-red-700">Deconectare</button>
+    </header>
+
+    <main id="appContainer" style="display: none;" class="p-8 max-w-6xl mx-auto space-y-6">
+        
+        <!-- ========== VIEW PROFESOR ========== -->
+        <div id="teacherView" style="display: none;">
+            <!-- Tabs Menu -->
+            <div class="flex space-x-6 border-b mb-6 px-2">
+                <button onclick="switchTab('noteView')" id="btnTabNote" class="tab-btn active">📘 Gestionează Notele</button>
+                <button onclick="switchTab('hwView')" id="btnTabHw" class="tab-btn">📝 Atribuie Temă (Acasă)</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Zona STÂNGA: Poate fi Adaugă Notă SAU Adaugă Temă (În funcție de Tab-ul apăsat) -->
+                <div class="bg-white p-6 border rounded-xl shadow-sm h-fit">
+                    
+                    <!-- TAB 1: Adaugare NOTE (Cod original adaptat vizual) -->
+                    <div id="noteViewBlock">
+                        <h3 class="text-lg font-bold mb-4">Adăugare Notă în catalog</h3>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><label class="block text-sm font-semibold">Elev</label><select id="tSelectElev" onchange="loadSpecifics(this.value)" class="w-full border rounded p-2"></select></div>
+                            <div><label class="block text-sm font-semibold">Materie</label><select id="tSelectMaterie" class="w-full border rounded p-2"></select></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2">Acordă Nota</label>
+                            <div class="flex gap-2 flex-wrap" id="gradesSelection"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold">Observație specială la notă</label>
+                            <textarea id="tObs" rows="2" class="w-full border rounded p-2 resize-none"></textarea>
+                        </div>
+                        <button onclick="saveGrade()" class="bg-indigo-600 text-white px-5 py-2.5 rounded w-full font-bold">Trimite Nota</button>
+                    </div>
+
+                    <!-- TAB 2: Adaugare TEMĂ NOUĂ (Panou nou!) -->
+                    <div id="hwViewBlock" style="display: none;">
+                        <h3 class="text-lg font-bold mb-4 text-orange-600">📝 Asignează o Temă nouă</h3>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><label class="block text-sm font-semibold">Către Elevul</label><select id="hSelectElev" onchange="loadSpecifics(this.value)" class="w-full border border-orange-200 rounded p-2"></select></div>
+                            <div><label class="block text-sm font-semibold">Din Materia</label><select id="hSelectMaterie" class="w-full border border-orange-200 rounded p-2"></select></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold">Informații / Ce punctaj va avea tema?</label>
+                            <input type="text" id="hPunctaj" placeholder="Ex: Pt 10, primește +1 punct la ascultare" class="w-full border rounded p-2 border-orange-200">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-1">Ce are de rezolvat? (Descriere Exerciții)</label>
+                            <textarea id="hDescriere" rows="4" placeholder="De făcut ex. 1, 2 pag. 50..." class="w-full border border-orange-200 rounded p-2 resize-none"></textarea>
+                        </div>
+                        <button onclick="saveHomework()" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded w-full font-bold">🚀 Trimite Tema Către Elev</button>
+                    </div>
+                </div>
+
+                <!-- Zona DREAPTA: Lista comuna (afișează și note și temele asiginate recent pt. verificare prof) -->
+                <div class="bg-white border rounded-xl shadow-sm p-6 max-h-[500px] overflow-y-auto">
+                    <h3 class="text-lg font-bold border-b pb-2 mb-4" id="rightBoxTitle">Situația elevului curent</h3>
+                    <div id="tHistoryList"><div class="text-gray-500 text-sm">Alegeți un elev.</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== VIEW ELEV ========== -->
+        <div id="studentView" style="display: none;">
+            
+            <!-- SECȚIUNEA TEMELOR ACTIVE PENTRU ACASĂ -->
+            <div id="hwContainerAlert" style="display: none;" class="mb-8">
+                <div class="flex items-center space-x-2 text-orange-600 font-bold mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <h2>Ai teme pentru acasă nefinalizate:</h2>
+                </div>
+                <!-- Boxurile generate din app.js -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="hwActiveList"></div>
+            </div>
+
+            <!-- Grila curată cu NOTE (ca în trecut) -->
+            <h2 class="text-gray-400 text-sm font-bold uppercase mb-4 tracking-wide">Catalogul Tău Școlar</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="studentSubjectsGrid"></div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
